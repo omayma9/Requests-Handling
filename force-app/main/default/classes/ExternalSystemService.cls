@@ -7,27 +7,26 @@
 **/
 public  with sharing class ExternalSystemService {
 
-    public void notifyExternalSystem(List<Case> casesList){
+    public void notifyExternalSystem(List<Case> caseList){
         List<Id> accountsIds;
         List<Contact> contacts;
-        for(Case newCase: newCaseList){
-            accountsIds.add(c.AccountId);
+        for(Case newCase: caseList){
+            accountsIds.add(newCase.AccountId);
         }  
-        List<Account> theAccounts= [SELECT id, (select id,name,email from contacts) FROM Account where id in :accountsIds WITH SECURITY_ENFORCED];
-        
-        for(Contact contact : theAccounts.contacts){
+        contacts= [SELECT id,name,email,accountId, account.Name FROM Contact where accountId in :accountsIds WITH SECURITY_ENFORCED];
+        for(Contact newContact : contacts){
             Http http = new Http();
             HttpRequest request = new HttpRequest();
             request.setEndpoint('callout:heroku_animals');
             request.setMethod('POST');
             request.setHeader('Content-Type', 'application/json;charset=UTF-8');
             // Set the body as a JSON object
-            request.setBody('{"name":"'+ contact.name + '-' + contact.email  +'\"}');
-            HTTPResponse res = http.send(request);
+            request.setBody('{"name":"'+ newContact.name + '-' + newContact.email  +'\"}');
+            HTTPResponse response = http.send(request);
              // Parse the JSON response
              if (response.getStatusCode() >= 200 && response.getStatusCode() <= 204) {
                 // Everything went as expected.
-                contacts.add(contact);
+                contacts.add(newContact);
               
             } else {
                 // Log error
@@ -51,17 +50,17 @@ public  with sharing class ExternalSystemService {
         && Schema.sObjectType.Task.fields.Priority.isUpdateable()
         && Schema.sObjectType.Task.fields.WhatId.isUpdateable()){
             List<Task> taskList= new List<Task>();
-            for(Contact contact: contacts){
-                Task task = new Task();
-                task.Subject = System.Label.Send_Email_To + account.name;
-                task.Status = System.Label.Open_Status;
-                task.Priority = System.Label.Normal_Priority;
-                task.WhatId = account.ID;
-                taskList.add(task);
+            for(Contact newContact: contacts){
+                Task newTask = new Task();
+                newTask.Subject = System.Label.Send_Email_To + account.Name;
+                newTask.Status = System.Label.Open_Status;
+                newTask.Priority = System.Label.Normal_Priority;
+                newTask.WhatId = newContact.AccountId;
+                taskList.add(newTask);
             }
             Database.SaveResult[] srList = Database.insert(taskList, false);
             //log Errors
-            Log.error(taskList);
+            Log.error(srList);
             
         }
      
