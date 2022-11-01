@@ -24,7 +24,7 @@ public with sharing class CaseTriggerHandler extends TriggerHandler{
         CaseTriggerHelper.validateAccessibility(newCaseList);
      }
      protected override void beforeUpdate() {
-        AccountTriggerHelper.notifyExternalSystem(newCaseMap);
+        CaseTriggerHelper.notifyExternalService(newCaseMap);
      }
 
 
