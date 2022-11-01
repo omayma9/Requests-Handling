@@ -20,7 +20,7 @@ public with sharing class CaseTriggerHelper {
 
     public static void contactValidationRules(List<Case> newCaseList) {
 
-        List<Id> accountsIds;
+        List<Id> accountsIds= new List<Id>();
         for(Case newCase: newCaseList){  
             if(newCase.AccountId != null){    
                 accountsIds.add(newCase.AccountId);
