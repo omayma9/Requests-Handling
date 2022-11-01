@@ -30,10 +30,8 @@ public  with sharing class ExternalSystemService {
                 contacts.add(contact);
               
             } else {
-                // System.debug('The status code returned was not expected: ' +
-                // response.getStatusCode() + ' ' + response.getStatus());
                 // Log error
-                Log.error('The status code returned was not expected: ' +
+                Log.error(System.Label.Response_Status +
                 response.getStatusCode() + ' ' + response.getStatus());
             }
                 
@@ -47,15 +45,11 @@ public  with sharing class ExternalSystemService {
 
     public void notifyContactByEmail(List<Contact> contacts){
 
-        // roll back point    
-        Savepoint sp = Database.setSavepoint();
-
         if(Schema.sObjectType.Task.isCreateable()
         && Schema.sObjectType.Task.fields.Subject.isUpdateable()
         && Schema.sObjectType.Task.fields.Status.isUpdateable()
         && Schema.sObjectType.Task.fields.Priority.isUpdateable()
         && Schema.sObjectType.Task.fields.WhatId.isUpdateable()){
-            
             List<Task> taskList= new List<Task>();
             for(Contact contact: contacts){
                 Task task = new Task();
@@ -65,16 +59,9 @@ public  with sharing class ExternalSystemService {
                 task.WhatId = account.ID;
                 taskList.add(task);
             }
-        
-            try{
-                Database.SaveResult[] srList = Database.insert(taskList, false);
-                // Log errors
-                Log.error(srList);
-            }catch(DmlException e){
-                err=e.getMessage();
-                // rollback entire transaction
-                Database.RollBack(sp);
-            }
+            Database.SaveResult[] srList = Database.insert(taskList, false);
+            //log Errors
+            Log.error(taskList);
             
         }
      
