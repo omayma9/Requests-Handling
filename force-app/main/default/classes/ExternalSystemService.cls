@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 10-31-2022
+ * @last modified on  : 11-01-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public  with sharing class ExternalSystemService {
@@ -30,7 +30,10 @@ public  with sharing class ExternalSystemService {
                 contacts.add(contact);
               
             } else {
-                System.debug('The status code returned was not expected: ' +
+                // System.debug('The status code returned was not expected: ' +
+                // response.getStatusCode() + ' ' + response.getStatus());
+                // Log error
+                Log.error('The status code returned was not expected: ' +
                 response.getStatusCode() + ' ' + response.getStatus());
             }
                 
@@ -53,18 +56,20 @@ public  with sharing class ExternalSystemService {
         && Schema.sObjectType.Task.fields.Priority.isUpdateable()
         && Schema.sObjectType.Task.fields.WhatId.isUpdateable()){
             
-            List<Task> tasks= new List<Task>();
+            List<Task> taskList= new List<Task>();
             for(Contact contact: contacts){
                 Task task = new Task();
                 task.Subject = System.Label.Send_Email_To + account.name;
                 task.Status = System.Label.Open_Status;
                 task.Priority = System.Label.Normal_Priority;
                 task.WhatId = account.ID;
-                tasks.add(task);
+                taskList.add(task);
             }
         
             try{
-                insert tasks;
+                Database.SaveResult[] srList = Database.insert(taskList, false);
+                // Log errors
+                Log.error(srList);
             }catch(DmlException e){
                 err=e.getMessage();
                 // rollback entire transaction
