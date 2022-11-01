@@ -22,5 +22,9 @@
     <members>Log__c.All</members>
     <name>ListView</name>
   </types>
+  <types>
+    <members>*</members>
+    <name>CustomLabels</name>
+  </types>
   <version>45.0</version>
 </Package>
