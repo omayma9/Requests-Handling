@@ -13,5 +13,6 @@ trigger CaseTrigger on Case (
     , after update
     , after delete
     , after undelete) {
-new CaseTriggerHandler().run();
+        new CaseTriggerHandler().run();
+    
 }
