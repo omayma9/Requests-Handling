@@ -28,10 +28,10 @@ public with sharing class CaseTriggerHelper {
                 newCase.addError(System.Label.Case_Without_Account);
             }
         }           
-        Map<Id,Account> casesAccountsMap=new Map<Id,Account>([SELECT ID, (select id from contacts) FROM Account where id in :accountsIds]);
+        Map<Id,Account> casesAccountsMap= accountsIds!=null ? new Map<Id,Account>([SELECT ID, (select id from contacts) FROM Account where id in :accountsIds]) : null;
         for(Case newCase: newCaseList){
             //ask about it   
-            Integer contactsListSize = casesAccountsMap.get(newCase.AccountId).Contacts.size();
+            Integer contactsListSize = newCase.AccountId!=null ? casesAccountsMap.get(newCase.AccountId).Contacts.size() :null;
             if(contactsListSize ==0){
                 newCase.addError(System.Label.Accounts_Without_Contacts);
             }   else {
