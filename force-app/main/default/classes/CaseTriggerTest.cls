@@ -36,8 +36,7 @@ public with sharing class CaseTriggerTest {
             // Given
             Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
                 'Name' => 'Salesforce'
-            },false);
-            insert company;
+            },true);
             Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
                 'Origin' => 'Phone',
                 'Subject' => 'Event Booking',
@@ -51,107 +50,106 @@ public with sharing class CaseTriggerTest {
             // Then
             System.assert(!result.isSuccess(),'You cannot create a request without attaching contacts to the account');
             System.assert(result.getErrors().size() > 0,'The error message is triggered');
-            System.assertEquals('You cannot create a request for accounts without contacts',
+            System.assertEquals(System.Label.Accounts_Without_Contacts,
             result.getErrors()[0].getMessage(), 'the account should had have contacts');
         }
+
+
+        @isTest
+        public static void validateWebOriginContacts(){
+            // Given
+            Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
+                'Name' => 'Salesforce'
+            },true);
+            Contact contact1 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+                'LastName' => 'Contact 1',
+                'AccountId'=> company.Id
+            },true);
+            Contact contact2 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+                'LastName' => 'Contact 2',
+                'AccountId'=> company.Id
+            },true);
+          
         
-        // @isTest
-        // public static void bookEventFromPhone(){
-        //     // Given
-            
-        //     Account a1 = new Account(Name = 'Salesforce');
-        //     insert a1;
-            
-        //     Contact c1 = new Contact(LastName = 'Contact 1', AccountId = a1.ID);
-        //     insert c1;
+            Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
+                'Origin' => 'Web',
+                'Subject' => 'Event Booking',
+                'Description' => 'Book Spots for Company A1 & their 4 employees',
+                'AccountId' =>company.Id
+            },false);
+
+
+            // When 
+
+            Test.startTest();
+
+            Database.SaveResult result = Database.insert(request, false);
+
+            Test.stopTest();
+
+            // Then
+            //Web
+            System.assert(!result.isSuccess(),'The web origin case should have only 1 contact');
+            System.assert(result.getErrors().size() > 0,'The error message is triggered');
+            System.assertEquals(System.Label.Web_Case_Attendee,
+            result.getErrors()[0].getMessage(),'We should have only 1 contact');
+        }
+
+        @isTest
+        public static void validatePhoneOriginContacts(){
+            // Given
+            Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
+                'Name' => 'Salesforce'
+            },true);
+            Contact contact1 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+                'LastName' => 'Contact 1',
+                'AccountId'=> company.Id
+            },true);
+            Contact contact2 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+                'LastName' => 'Contact 2',
+                'AccountId'=> company.Id
+            },true);
+            Contact contact3 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+                'LastName' => 'Contact 3',
+                'AccountId'=> company.Id
+            },true);
+            Contact contact4 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+                'LastName' => 'Contact 4',
+                'AccountId'=> company.Id
+            },true);
+
+            Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
+                'Origin' => 'Phone',
+                'Subject' => 'Event Booking',
+                'Description' => 'Book Spots for Company A1 & their 4 employees',
+                'AccountId' =>company.Id
+            },false);
+
+           
     
-        //     Contact c2 = new Contact(LastName = 'Contact 2', AccountId = a1.ID);
-        //     insert c2;
-    
-        //     Contact c3 = new Contact(LastName = 'Contact 3', AccountId = a1.ID);
-        //     insert c3;
-    
-        //     Case request = new Case(Origin = 'Phone',Subject = 'Event Booking', Description = 'Book Spots for Company A1 & their 3 employees', AccountId = a1.ID);
-            
-        //     // When 
+            // When 
 
-        //     Test.startTest();
+            Test.startTest();
 
-        //     Database.SaveResult result = Database.insert(request, false);
-        //     Test.stopTest();
+            Database.SaveResult result = Database.insert(request, false);
 
-        //     // Then
+            Test.stopTest();
 
-        //     //System.assert(result.isSuccess());
-
-
-        // }
-
-
-        // @isTest
-        // public static void refuseEventBookingWhenNumberOfAttendeesIsMoreThanThreeForPhoneCases(){
-        //     // Given
-            
-        //     Account a1 = new Account(Name = 'Salesforce');
-        //     insert a1;
-            
-        //     Contact c1 = new Contact(LastName = 'Contact 1', AccountId = a1.ID);
-        //     insert c1;
-    
-        //     Contact c2 = new Contact(LastName = 'Contact 2', AccountId = a1.ID);
-        //     insert c2;
-    
-        //     Contact c3 = new Contact(LastName = 'Contact 3', AccountId = a1.ID);
-        //     insert c3;
-
-        //     Contact c4 = new Contact(LastName = 'Contact 4', AccountId = a1.ID);
-        //     insert c4;
-    
-        //     Case request = new Case(Origin = 'Phone',Subject = 'Event Booking', Description = 'Book Spots for Company A1 & their 4 employees', AccountId = a1.ID);
-            
-        //     // When 
-
-        //     Test.startTest();
-
-        //     Database.SaveResult result = Database.insert(request, false);
-
-        //     Test.stopTest();
-
-        //     // Then
-        //     // System.assert(!result.isSuccess());
-        //     // System.assert(result.getErrors().size() > 0);
-        //     // System.assertEquals('Phone request are only allowed to have three attendee',
-        //     // result.getErrors()[0].getMessage());
-
-        // }
+            // Then
         
-        // @isTest
-        // public static void bookEventFromTheWeb(){
-        //     // Given
-            
-        //     Account a1 = new Account(Name = 'Salesforce');
-        //     insert a1;
-                
-                   
-        //     Contact c1 = new Contact(LastName = 'Contact 1', AccountId = a1.ID);
-        //     insert c1;
-    
-        //     Case request = new Case(Origin = 'Web',Subject = 'Event Booking', Description = 'Book One Spot for Company A1', AccountId = a1.ID);
-            
-        //     // When 
+            //Phone
+            System.assert(!result.isSuccess(),'The phone origin case should have only 3 contacts');
+            System.assert(result.getErrors().size() > 0,'The error message is triggered');
+            System.assertEquals(System.Label.Phone_Case_Attendees,
+            result.getErrors()[0].getMessage(),'We should have only 3 contacts');
 
-        //     Test.startTest();
+        }
 
-        //     Database.SaveResult result = Database.insert(request, false);
+       
 
-        //     Test.stopTest();
 
-        //     // Then
-
-        //     //System.assert(result.isSuccess());
-
-                
-        // } 
+        
+     
             
         // @isTest
         // public static void refuseEventBookingWhenNumberOfAttendeesIsMoreThanOneForWebCases(){
