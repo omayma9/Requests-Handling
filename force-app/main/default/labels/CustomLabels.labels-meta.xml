@@ -103,4 +103,28 @@
         <shortDescription>Web_Origin</shortDescription>
         <value>Web</value>
     </labels>
+    <labels>
+        <fullName>New_reservation_Created</fullName>
+        <categories>text</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New_reservation_Created</shortDescription>
+        <value>New reservation Created !</value>
+    </labels>
+    <labels>
+        <fullName>The_reservation_for_the_account</fullName>
+        <categories>text</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>The_reservation_for_the_account</shortDescription>
+        <value>The reservation for the account</value>
+    </labels>
+    <labels>
+        <fullName>Was_Registered_Successfully</fullName>
+        <categories>text</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Was_Registered_Successfully</shortDescription>
+        <value>Was Registered Successfully !</value>
+    </labels>
 </CustomLabels>

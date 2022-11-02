@@ -13,9 +13,10 @@ public with sharing class CaseTriggerHelper {
         && Schema.sObjectType.Contact.isAccessible() && Schema.sObjectType.Case.fields.AccountId.isAccessible()){
             contactValidationRules(newCaseList);
         }
-        // else{
-        //     newCase.addError(System.Label.Objects_Fields_Access);
-        // }
+        else{
+         // Log error
+         Log.error(System.Label.Objects_Fields_Access);
+        }
     }
 
     public static void contactValidationRules(List<Case> newCaseList) {
@@ -36,8 +37,7 @@ public with sharing class CaseTriggerHelper {
                 newCase.addError(System.Label.Accounts_Without_Contacts);
             }   else {
                 contactsNumberValidation(newCase,contactsListSize);                                  
-            }       
-            
+            }  
         }        
     }
 
@@ -56,8 +56,9 @@ public with sharing class CaseTriggerHelper {
                 }
             }
         }else{
-            //ask about it
             newCase.addError(System.Label.Origin_Field_Access);
+             // Log error
+             Log.error(System.Label.Origin_Field_Access);
         }       
     }
 
