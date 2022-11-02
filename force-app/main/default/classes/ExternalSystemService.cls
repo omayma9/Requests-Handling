@@ -54,7 +54,7 @@ public  with sharing class ExternalSystemService {
             toAddresses.add(newContact.Email);
             email.setSubject('New reservation Created!');
             email.setToAddresses(toAddresses);
-            email.setHTMLBody('The reservation for the account : ' + Account.Name + ' was registered successfully!');
+            email.setHTMLBody('The reservation for the account : ' + newContact.Account.Name + ' was registered successfully!');
             lstSingleEmailMessage.add(email);    
         }
         Messaging.SendEmailResult[] r = Messaging.sendEmail(lstSingleEmailMessage);
