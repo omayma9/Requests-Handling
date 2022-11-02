@@ -65,7 +65,6 @@ public with sharing class CaseTriggerHelper {
         List<Case> newCaseList = [SELECT AccountId, Status FROM Case where id in :newCaseMap.keySet() WITH SECURITY_ENFORCED];
         for(Case newCase:newCaseList){
             if(newCase.Status == System.Label.Closed_Status){
-                //ExternalSystemService service = new ExternalSystemService();
                 ExternalSystemService.notifyExternalSystem(newCaseMap.keySet());
             }
         }      
