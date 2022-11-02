@@ -24,15 +24,12 @@ public  with sharing class ExternalSystemService {
              if (response.getStatusCode() >= 200 && response.getStatusCode() <= 204) {
                 // Everything went as expected.
                 contactstoNotify.add(newContact);
-              
             } else {
                 // Log error
                 Log.error(System.Label.Response_Status +
                 response.getStatusCode() + ' ' + response.getStatus());
-            }
-                
+            }      
         }
-
         notifyContactByEmail(contactstoNotify); 
     }
         
@@ -53,27 +50,18 @@ public  with sharing class ExternalSystemService {
 
 
     public static void notifyContactByEmail(List<Contact> contacts){
-
-        if(Schema.sObjectType.Task.isCreateable()
-        && Schema.sObjectType.Task.fields.Subject.isUpdateable()
-        && Schema.sObjectType.Task.fields.Status.isUpdateable()
-        && Schema.sObjectType.Task.fields.Priority.isUpdateable()
-        && Schema.sObjectType.Task.fields.WhatId.isUpdateable()){
-            List<Task> taskList= new List<Task>();
-            for(Contact newContact: contacts){
-                Task newTask = new Task();
-                newTask.Subject = System.Label.Send_Email_To + account.Name;
-                newTask.Status = System.Label.Open_Status;
-                newTask.Priority = System.Label.Normal_Priority;
-                newTask.WhatId = newContact.AccountId;
-                taskList.add(newTask);
-            }
-            Database.SaveResult[] srList = Database.insert(taskList, false);
-            //log Errors
-            Log.error(srList);
-            
+        List<Messaging.SingleEmailMessage> lstSingleEmailMessage = new List<Messaging.SingleEmailMessage>();
+        List<String> toAddresses = new List<String>();
+        for (Contact newContact : contacts) {
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            toAddresses.add(newContact.Email);
+            email.setSubject('New reservation Created!');
+            email.setToAddresses(toAddresses);
+            email.setHTMLBody('The reservation for the account : ' + Account.Name + ' was registered successfully!');
+            lstSingleEmailMessage.add(email);    
         }
-     
+        Messaging.SendEmailResult[] r = Messaging.sendEmail(lstSingleEmailMessage);
+
     }
 
 }
