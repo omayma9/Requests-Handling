@@ -2,14 +2,43 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 11-01-2022
+ * @last modified on  : 11-02-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @isTest
 public with sharing class CaseTriggerTest {  
 
+    @TestSetup
+    static void makeData(){
+        
+        Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
+            'Name' => 'Salesforce'
+        },true);
+
+        Contact contact1 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+            'LastName' => 'Contact 1',
+            'AccountId'=> company.Id
+        },true);
+        Contact contact2 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
+            'LastName' => 'Contact 2',
+            'AccountId'=> company.Id
+        },true);
+
+        Case request1 = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
+            'Subject' => 'Event Booking',
+            'Description' => 'Book Spots for Company A1 & their 4 employees',
+            'AccountId'   => company.id
+            
+        },true);
+        Case request2 = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
+            'Subject' => 'Event Booking',
+            'Description' => 'Book Spots for Company A1 & their 4 employees',
+            'AccountId'   => company.id
+        },true);
+
+    }
         @isTest
-        public static void caseWithoutAccount(){
+        public static void caseWithoutAccountTest(){
             // Given
     
             Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
@@ -32,7 +61,7 @@ public with sharing class CaseTriggerTest {
         }
         
         @isTest
-        public static void accountCaseWithoutContacts(){
+        public static void accountCaseWithoutContactsTest(){
             // Given
             Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
                 'Name' => 'Salesforce'
@@ -56,18 +85,20 @@ public with sharing class CaseTriggerTest {
 
 
         @isTest
-        public static void validateWebOriginContacts(){
+        public static void validateWebOriginContactsTest(){
             // Given
             Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
                 'Name' => 'Salesforce'
             },true);
             Contact contact1 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
                 'LastName' => 'Contact 1',
-                'AccountId'=> company.Id
+                'AccountId'=> company.Id,
+                'Email'   => 'test@gmail.com'
             },true);
             Contact contact2 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
                 'LastName' => 'Contact 2',
-                'AccountId'=> company.Id
+                'AccountId'=> company.Id,
+                'Email'   => 'test@gmail.com'
             },true);
           
         
@@ -96,7 +127,7 @@ public with sharing class CaseTriggerTest {
         }
 
         @isTest
-        public static void validatePhoneOriginContacts(){
+        public static void validatePhoneOriginContactsTest(){
             // Given
             Account company = (Account)TestDataFactory.createSObject('Account', new Map<String,Object> {
                 'Name' => 'Salesforce'
@@ -124,11 +155,7 @@ public with sharing class CaseTriggerTest {
                 'Description' => 'Book Spots for Company A1 & their 4 employees',
                 'AccountId' =>company.Id
             },false);
-
-           
-    
             // When 
-
             Test.startTest();
 
             Database.SaveResult result = Database.insert(request, false);
@@ -145,47 +172,52 @@ public with sharing class CaseTriggerTest {
 
         }
 
-       
 
-
+        @isTest
+        public static void getInfoFromExternalSystemTest(){
+            Contact contact1 = [SELECT id, accountId, Name, Email from Contact limit 1];
+            // Set mock callout class 
+            Test.startTest(); 
+            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+            // Call method to test.
+            // This causes a fake response to be sent
+            // from the class that implements HttpCalloutMock. 
+            HTTPResponse response = ExternalSystemService.getInfoFromExternalSystem(contact1.Name, contact1.Email);
+            Test.stopTest();
+            //Verify response received contains fake values
+            String contentType = response.getHeader('Content-Type');
+            System.assert(contentType == 'application/json;charset=UTF-8','We should have the same content type');
+            String actualValue = response.getBody();
+            String expectedValue = '{"animals":["majestic badger","fluffy bunny","scary bear","chicken"]}';
+            System.assertEquals(actualValue, expectedValue,'We should have the exact response body');
+            System.assertEquals(200, response.getStatusCode(),'We should have the exact response body 200');
         
-     
-            
-        // @isTest
-        // public static void refuseEventBookingWhenNumberOfAttendeesIsMoreThanOneForWebCases(){
-        //     // Given
-            
-        //     Account a1 = new Account(Name = 'Salesforce');
-        //     insert a1;
-            
-        //     Contact c1 = new Contact(LastName = 'Contact 1', AccountId = a1.ID);
-        //     insert c1;
+        }
     
-        //     Contact c2 = new Contact(LastName = 'Contact 2', AccountId = a1.ID);
-        //     insert c2;
-    
-        //     Contact c3 = new Contact(LastName = 'Contact 3', AccountId = a1.ID);
-        //     insert c3;
-    
-        //     Case request = new Case(Origin = 'Web',Subject = 'Event Booking', Description = 'Book Spots for Company A1 & their 3 employees', AccountId = a1.ID);
-            
-        //     // When 
 
-        //     Test.startTest();
+        @isTest
+        public static void notifyExternalSystemTest(){
 
-        //     Database.SaveResult result = Database.insert(request, false);
+            Map<Id,Case> caseList = new Map<Id,Case>([Select id, accountId from case limit 2]);
+            Test.startTest();
+            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
+            ExternalSystemService.notifyExternalSystem(caseList.keySet());
+            Test.stopTest();
+        }
 
-        //     Test.stopTest();
 
-        //     // Then
+        @isTest
+        public static void notifyExternalSystemErrorTest(){
+            Map<Id,Case> caseList = new Map<Id,Case>([Select id, accountId from case limit 2]);
+            // Set mock callout class 
+            Test.startTest(); 
+            Test.setMock(HttpCalloutMock.class, new MockHttpResponseGeneratorError());
+            ExternalSystemService.notifyExternalSystem(caseList.keySet());
+            Test.stopTest();
+            //Verify response received contains fake values
+            //System.assertEquals(205, response.getStatusCode(),'We should have the exact response body 205');
+        
+        }
 
-        //     // System.assert(!result.isSuccess());
-        //     // System.assert(result.getErrors().size() > 0);
-        //     // System.assertEquals('Web request are only allowed to have one attendee',
-        //     // result.getErrors()[0].getMessage());
-
-                
-        // } 
-    
-    
 }
+
