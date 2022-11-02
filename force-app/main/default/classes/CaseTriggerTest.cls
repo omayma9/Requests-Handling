@@ -88,7 +88,7 @@ public with sharing class CaseTriggerTest {
     }
 
     @isTest
-    public static void validateWebOriginContactsTest(){
+    public static void validateContactsWebOriginTest(){
         Account company = [SELECT id, (SELECT id from Contacts) from Account  limit 1];
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
             'Origin' => 'Web',
@@ -109,7 +109,7 @@ public with sharing class CaseTriggerTest {
     }
 
     @isTest
-    public static void validatePhoneOriginContactsTest(){
+    public static void validateContactsPhoneOriginTest(){
         // Given
         Account company = [SELECT id, (SELECT id from Contacts) from Account  limit 1];
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {

@@ -7,10 +7,9 @@
 **/
 public  with sharing class ExternalSystemService {
 
-    
     @future(callout = true)
     public static void notifyExternalSystem(Set<Id> caseIds){
-        List<Case> caseList=new List<Case>([SELECT id, AccountId from case where id in :caseIds]);
+        List<Case> caseList=new List<Case>([SELECT id, AccountId from case where id in :caseIds WITH SECURITY_ENFORCED]);
         List<Id> accountsIds=new List<Id>();
         List<Contact> contacts = new List<Contact>();
         List<Contact> contactstoNotify = new List<Contact>();
@@ -35,10 +34,8 @@ public  with sharing class ExternalSystemService {
         
     
     public static HttpResponse getInfoFromExternalSystem(String contactName, String contactEmail) {
-        //List<String> contactdata = contactsInfo.get(contactId);
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        //request.setEndpoint('callout:heroku_animals');
         request.setEndpoint('callout:heroku_animals');
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json;charset=UTF-8');
