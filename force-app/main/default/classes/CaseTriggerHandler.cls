@@ -13,7 +13,6 @@ public with sharing class CaseTriggerHandler extends TriggerHandler{
     private Map<Id, Case> newCaseMap;
    
     public CaseTriggerHandler() {
-        //this.setMaxLoopCount(1);
         oldCaseList = (List<Case>) Trigger.old;
         newCaseList = (List<Case>) Trigger.new;
         oldCaseMap = (Map<Id, Case>) Trigger.oldMap;

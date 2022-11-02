@@ -7,6 +7,10 @@
 **/
 @isTest
 public class MockHttpResponseGenerator implements HttpCalloutMock {
+    public Integer status;
+    public MockHttpResponseGenerator(Integer status){
+        this.status = status;
+    }
     // Implement this interface method
     public HTTPResponse respond(HTTPRequest req) {
         // Optionally, only send a mock response for a specific endpoint
@@ -18,7 +22,7 @@ public class MockHttpResponseGenerator implements HttpCalloutMock {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json;charset=UTF-8');
         res.setBody('{"animals":["majestic badger","fluffy bunny","scary bear","chicken"]}');
-        res.setStatusCode(200);
+        res.setStatusCode(status);
         return res;
     }
 }

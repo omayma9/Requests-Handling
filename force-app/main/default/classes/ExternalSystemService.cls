@@ -25,14 +25,15 @@ public  with sharing class ExternalSystemService {
                 contactstoNotify.add(newContact);
             } else {
                 // Log error
+                if(!Test.isRunningTest()){
                 Log.error(System.Label.Response_Status +
                 response.getStatusCode() + ' ' + response.getStatus());
+            }
             }      
         }
         notifyContactByEmail(contactstoNotify); 
     }
         
-    
     public static HttpResponse getInfoFromExternalSystem(String contactName, String contactEmail) {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
@@ -45,20 +46,18 @@ public  with sharing class ExternalSystemService {
         return response;
     }
 
-
     public static void notifyContactByEmail(List<Contact> contacts){
         List<Messaging.SingleEmailMessage> lstSingleEmailMessage = new List<Messaging.SingleEmailMessage>();
         List<String> toAddresses = new List<String>();
         for (Contact newContact : contacts) {
             Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
             toAddresses.add(newContact.Email);
-            email.setSubject('New reservation Created!');
+            email.setSubject(System.Label.New_reservation_Created);
             email.setToAddresses(toAddresses);
-            email.setHTMLBody('The reservation for the account : ' + newContact.Account.Name + ' was registered successfully!');
+            email.setHTMLBody(System.Label.The_reservation_for_the_account   + newContact.Account.Name + System.Label.Was_Registered_Successfully);
             lstSingleEmailMessage.add(email);    
         }
         Messaging.SendEmailResult[] r = Messaging.sendEmail(lstSingleEmailMessage);
-
     }
 
 }
