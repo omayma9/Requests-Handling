@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Accounts_Without_Contacts</fullName>
+        <categories>validation rules</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Accounts_Without_Contacts</shortDescription>
+        <value>You cannot create a request for accounts without contacts</value>
+    </labels>
+    <labels>
+        <fullName>Case_Without_Account</fullName>
+        <categories>validation rules</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Case_Without_Account</shortDescription>
+        <value>You cannot create a request without attaching an account</value>
+    </labels>
+    <labels>
+        <fullName>Closed_Status</fullName>
+        <categories>Case Status</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Closed_Status</shortDescription>
+        <value>Closed</value>
+    </labels>
+    <labels>
+        <fullName>Normal_Priority</fullName>
+        <categories>task priority</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Normal_Priority</shortDescription>
+        <value>Normal</value>
+    </labels>
+    <labels>
+        <fullName>Objects_Fields_Access</fullName>
+        <categories>validation rules</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Objects_Fields_Access</shortDescription>
+        <value>You don&apos;t have the access to the contact/Account objects/ fields</value>
+    </labels>
+    <labels>
+        <fullName>Open_Status</fullName>
+        <categories>task Status</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Open_Status</shortDescription>
+        <value>Open</value>
+    </labels>
+    <labels>
+        <fullName>Origin_Field_Access</fullName>
+        <categories>validation rules</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Origin_Field_Access</shortDescription>
+        <value>You don&apos;t have the access to the Origin field</value>
+    </labels>
+    <labels>
+        <fullName>Phone_Case_Attendees</fullName>
+        <categories>validation rules</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Phone_Case_Attendees</shortDescription>
+        <value>Phone request are only allowed to have three attendee</value>
+    </labels>
+    <labels>
+        <fullName>Phone_Origin</fullName>
+        <categories>Case origin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Phone_Origin</shortDescription>
+        <value>Phone</value>
+    </labels>
+    <labels>
+        <fullName>Response_Status</fullName>
+        <categories>Response status</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Response_Status</shortDescription>
+        <value>The status code returned was not expected:</value>
+    </labels>
+    <labels>
+        <fullName>Send_Email_To</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Send_Email_To</shortDescription>
+        <value>Send Email To :</value>
+    </labels>
+    <labels>
+        <fullName>Web_Case_Attendee</fullName>
+        <categories>validation rules</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Web_Case_Attendee</shortDescription>
+        <value>Web request are only allowed to have one attendee</value>
+    </labels>
+    <labels>
+        <fullName>Web_Origin</fullName>
+        <categories>Case origin</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Web_Origin</shortDescription>
+        <value>Web</value>
+    </labels>
+</CustomLabels>
