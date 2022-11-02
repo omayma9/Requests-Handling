@@ -15,19 +15,23 @@ public with sharing class CaseTriggerTest {
         },true);
         Contact contact1 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
             'LastName' => 'Contact 1',
-            'AccountId'=> company.Id
+            'AccountId'=> company.Id ,
+            'Email'    => 'contact1@gmail.com'
         },true);
         Contact contact2 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
             'LastName' => 'Contact 2',
-            'AccountId'=> company.Id
+            'AccountId'=> company.Id ,
+            'Email'    => 'contact2@gmail.com'
         },true);
         Contact contact3 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
             'LastName' => 'Contact 3',
-            'AccountId'=> company.Id
+            'AccountId'=> company.Id ,
+            'Email'    => 'contact3@gmail.com'
         },true);
         Contact contact4 = (Contact)TestDataFactory.createSObject('Contact', new Map<String,Object> {
             'LastName' => 'Contact 4',
-            'AccountId'=> company.Id
+            'AccountId'=> company.Id ,
+            'Email'    => 'contact4@gmail.com'
         },true);
         Case request1 = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
             'Subject' => 'Event Booking',
@@ -83,10 +87,8 @@ public with sharing class CaseTriggerTest {
         result.getErrors()[0].getMessage(), 'the account should had have contacts');
     }
 
-
     @isTest
     public static void validateWebOriginContactsTest(){
-        
         Account company = [SELECT id, (SELECT id from Contacts) from Account  limit 1];
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
             'Origin' => 'Web',
@@ -126,9 +128,7 @@ public with sharing class CaseTriggerTest {
         System.assert(result.getErrors().size() > 0,'The error message is triggered');
         System.assertEquals(System.Label.Phone_Case_Attendees,
         result.getErrors()[0].getMessage(),'We should have only 3 contacts');
-
     }
-
 
     @isTest
     public static void getInfoFromExternalSystemTest(){
@@ -154,14 +154,12 @@ public with sharing class CaseTriggerTest {
 
     @isTest
     public static void notifyExternalSystemTest(){
-
         Map<Id,Case> caseList = new Map<Id,Case>([Select id, accountId from case limit 2]);
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
         ExternalSystemService.notifyExternalSystem(caseList.keySet());
         Test.stopTest();
     }
-
 
     @isTest
     public static void notifyExternalSystemErrorTest(){
@@ -173,7 +171,6 @@ public with sharing class CaseTriggerTest {
         Test.stopTest();
         //Verify response received contains fake values
         //System.assertEquals(205, response.getStatusCode(),'We should have the exact response body 205');
-    
     }
 
 }
