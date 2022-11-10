@@ -6,7 +6,7 @@
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 public  with sharing class ExternalSystemService {
-
+    //we can use queueable
     @future(callout = true)
     public static void notifyExternalSystem(Set<Id> caseIds){
         List<Case> caseList=new List<Case>([SELECT id, AccountId from case where id in :caseIds WITH SECURITY_ENFORCED]);
@@ -25,6 +25,7 @@ public  with sharing class ExternalSystemService {
                 contactstoNotify.add(newContact);
             } else {
                 // Log error
+                //use plateform event instead
                 if(!Test.isRunningTest()){
                 Log.error(System.Label.Response_Status +
                 response.getStatusCode() + ' ' + response.getStatus());
@@ -36,6 +37,7 @@ public  with sharing class ExternalSystemService {
         
     public static HttpResponse getInfoFromExternalSystem(String contactName, String contactEmail) {
         Http http = new Http();
+        //add try catch
         HttpRequest request = new HttpRequest();
         request.setEndpoint('callout:heroku_animals');
         request.setMethod('POST');
