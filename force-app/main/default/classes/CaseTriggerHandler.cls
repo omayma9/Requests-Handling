@@ -22,7 +22,7 @@ public with sharing class CaseTriggerHandler extends TriggerHandler{
     protected override void beforeInsert() {
         CaseTriggerHelper.validateAccessibility(newCaseList);
      }
-     protected override void beforeUpdate() {
+     protected override void afterUpdate() {
         CaseTriggerHelper.notifyExternalService(newCaseMap);
      }
 
