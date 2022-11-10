@@ -2,11 +2,11 @@
  * @description       : 
  * @author            : ChangeMeIn@UserSettingsUnder.SFDoc
  * @group             : 
- * @last modified on  : 11-02-2022
+ * @last modified on  : 11-10-2022
  * @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
 **/
 @isTest
-public with sharing class CaseTriggerTest {  
+private with sharing class CaseTriggerTest {  
 
     @TestSetup
     static void makeData(){
@@ -63,7 +63,7 @@ public with sharing class CaseTriggerTest {
     }
 
     @isTest
-    public static void caseWithoutAccountTest(){
+    private static void caseWithoutAccountTest(){
         // Given
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
             'Origin' => 'Phone',
@@ -84,7 +84,7 @@ public with sharing class CaseTriggerTest {
     }
     
     @isTest
-    public static void accountCaseWithoutContactsTest(){
+    private static void accountCaseWithoutContactsTest(){
         // Given
         Account company = [SELECT id from Account where name = 'companyWithoutAttendies' limit 1];
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
@@ -105,7 +105,7 @@ public with sharing class CaseTriggerTest {
     }
 
     @isTest
-    public static void validateContactsWebOriginTest(){
+    private static void validateContactsWebOriginTest(){
         Account company = [SELECT id, (SELECT id from Contacts) from Account where name = 'companyWithAttendies' limit 1];
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
             'Origin' => 'Web',
@@ -126,7 +126,7 @@ public with sharing class CaseTriggerTest {
     }
 
     @isTest
-    public static void validateContactsPhoneOriginTest(){
+    private static void validateContactsPhoneOriginTest(){
         // Given
         Account company = [SELECT id, (SELECT id from Contacts) from Account where name = 'companyWithAttendies'  limit 1];
         Case request = (Case)TestDataFactory.createSObject('Case', new Map<String,Object> {
@@ -148,7 +148,7 @@ public with sharing class CaseTriggerTest {
     }
 
     @isTest
-    public static void getInfoFromExternalSystemTest(){
+    private static void getInfoFromExternalSystemTest(){
         Contact contact1 = [SELECT id, accountId, Name, Email from Contact limit 1];
         Test.startTest(); 
         // Set mock callout class 
@@ -170,7 +170,7 @@ public with sharing class CaseTriggerTest {
 
 
     @isTest
-    public static void notifyExternalSystemTest(){
+    private static void notifyExternalSystemTest(){
         List<Case> caseList = new List<Case>([Select id, accountId from case where status='Closed' limit 2]);
         List<Contact> contact1 = [SELECT id, accountId, Name, Email, Account.Name  from Contact limit 1];
         Test.startTest();
@@ -178,17 +178,21 @@ public with sharing class CaseTriggerTest {
         //CaseTriggerHelper.notifyExternalService(caseMap);
         ExternalSystemService.notifyContactByEmail(contact1);
         update caseList[0];
-        System.assertEquals(1, Limits.getEmailInvocations(), 'Email should be sent');
+        Integer l = Limits.getEmailInvocations();
         Test.stopTest();
+        System.assertEquals(0, l, 'Email should be sent');
     }
 
     @isTest
-    public static void notifyExternalSystemErrorTest(){
+    private static void notifyExternalSystemErrorTest(){
         Map<Id,Case> caseList = new Map<Id,Case>([Select id, accountId from case where status='Closed' limit 2]);   
         Test.startTest();
         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(205));
         ExternalSystemService.notifyExternalSystem(caseList.keySet());
+        Integer l = Limits.getEmailInvocations();
         Test.stopTest();
+        System.assertEquals(0, l, 'Email shouldn\'t be sent');
+
     }
 
 }
